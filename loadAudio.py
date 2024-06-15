@@ -4,10 +4,9 @@
 # mateixa longitud, augment de l'espectrograma, etc.)
 #####################################
 
-import math, random
+import random
 import torch
 from torchaudio import transforms, load
-from IPython.display import Audio
 
 class AudioUtil():
   # Load an audio file. Return the signal as a tensor and the sample rate
