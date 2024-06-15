@@ -16,4 +16,5 @@ max_epochs = 10
 tl.training(mo.myModel, td.train_dl, max_epochs)
 
 # GUardem els pesos resultants de l'entrenament
-torch.save(mo.myModel.state_dict(), 'audio_classifier_weights_32_512.pth')
+#torch.save(mo.myModel.state_dict(), 'audio_classifier_weights_test_Scores.pth')
+torch.save(mo.myModel.state_dict(), 'xxxxxx.pth')
