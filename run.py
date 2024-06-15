@@ -6,10 +6,10 @@ import Model as mo
 import Inference as inf
 import TrainingData as td
 from torch import load
-
+from torchmetrics import Precision, Recall, F1, ConfusionMatrix
 
 # Carreguem els pesos d'algun model previament entrenat
-mo.myModel.load_state_dict(load('C:\\Users\\denou\\PycharmProjects\\pythonProject\\venv\\audio_classifier_weights_64m_1024w_AdamOK.pth'))
+mo.myModel.load_state_dict(load('C:\\Users\\denou\\PycharmProjects\\pythonProject\\venv\\audio_classifier_weights_ESC50_32m_512w_4s.pth'))
 mo.myModel.eval()  # Mode avaluacio
 
 # Cridem la classe inferencia
