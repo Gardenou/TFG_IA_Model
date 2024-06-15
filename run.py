@@ -8,7 +8,7 @@ import TrainingData as td
 from torch import load
 
 # Carreguem els pesos d'algun model previament entrenat
-mo.myModel.load_state_dict(load('C:\\Users\\denou\\PycharmProjects\\pythonProject\\venv\\audio_classifier_weights_ESC50_32m_512w_4s.pth'))
+mo.myModel.load_state_dict(load('C:\\Users\\denou\\OneDrive\\Documents\\TFG_IA_Model\\audio_classifier_weights_64m_1024w_RMSprop.pth'))
 mo.myModel.eval()  # Mode avaluacio
 
 # Cridem la classe inferencia

@@ -10,33 +10,33 @@ import pandas as pd
 from pathlib import Path
 
 # Path on tenim la carpeta del conjunt de dades
-#download_path = 'C:\\Users\\denou\\Downloads\\UrbanSound8K\\UrbanSound8K'
+download_path = 'C:\\Users\\denou\\Downloads\\UrbanSound8K\\UrbanSound8K'
 
-download_path = 'C:\\Users\\denou\\Downloads\\ESC-50-master\\ESC-50-master'
+#download_path = 'C:\\Users\\denou\\Downloads\\ESC-50-master\\ESC-50-master'
 
 # Path amb l'arxiu de les metadades
-#metadata_file = 'C:\\Users\\denou\\Downloads\\UrbanSound8K\\UrbanSound8K\\metadata\\UrbanSound8K.csv'
+metadata_file = 'C:\\Users\\denou\\Downloads\\UrbanSound8K\\UrbanSound8K\\metadata\\UrbanSound8K.csv'
 
-metadata_file = 'C:\\Users\\denou\\Downloads\\ESC-50-master\\ESC-50-master\\meta\\esc50.csv'
+#metadata_file = 'C:\\Users\\denou\\Downloads\\ESC-50-master\\ESC-50-master\\meta\\esc50.csv'
 
 df = pd.read_csv(metadata_file)
 
 
 # Construct file path by concatenating fold and file name
-#df['relative_path'] = '/fold' + df['fold'].astype(str) + '/' + df['slice_file_name'].astype(str)
+df['relative_path'] = '/fold' + df['fold'].astype(str) + '/' + df['slice_file_name'].astype(str)
 
-df['relative_path'] = '/' + df['filename'].astype(str)
+#df['relative_path'] = '/' + df['filename'].astype(str)
 
 # Take relevant columns
-#df = df[['relative_path', 'classID']]
+df = df[['relative_path', 'classID']]
 
-df = df[['relative_path', 'target']]
+#df = df[['relative_path', 'target']]
 
 
 # Path on tenim els fitxers d'audio
-#data_path = 'C:\\Users\\denou\\Downloads\\UrbanSound8K\\UrbanSound8K\\audio'
+data_path = 'C:\\Users\\denou\\Downloads\\UrbanSound8K\\UrbanSound8K\\audio'
 
-data_path = 'C:\\Users\\denou\\Downloads\\ESC-50-master\\ESC-50-master\\audio'
+#data_path = 'C:\\Users\\denou\\Downloads\\ESC-50-master\\ESC-50-master\\audio'
 
 
 myds = dl.SoundDS(df, data_path)
