@@ -4,8 +4,8 @@
 
 import Model as mo
 import TrainingData as td
-import calculateMetrics as cm
 import torch
+import calculateMetrics as cm
 
 def inference(model, val_dl):
     correct_prediction = 0
@@ -29,20 +29,21 @@ def inference(model, val_dl):
             # Get the predicted class with the highest score
             _, prediction = torch.max(outputs, 1)
 
-            all_preds.extend(prediction.cpu().numpy())
-            all_labels.extend(labels.cpu().numpy())
-
             # Count of predictions that matched the target label
             correct_prediction += (prediction == labels).sum().item()
             total_prediction += prediction.shape[0]
 
+            all_preds.extend(prediction.cpu().numpy())
+            all_labels.extend(labels.cpu().numpy())
+
     acc = correct_prediction / total_prediction
-    print(f'Precisió: {acc:.2f}, Total items: {total_prediction}')
+    print(f'Accuracy: {acc:.2f}, Total items: {total_prediction}')
 
-    precision, recall, f1_score, conf_matrix = cm.calculate_metrics(torch.tensor(all_preds), torch.tensor(all_labels), 10)
-
+    precision, recall, f1_score, accuracy, conf_matrix = cm.calculate_metrics(torch.tensor(all_preds), torch.tensor(all_labels), 10)
+    
+    print(f"Accuracy: {accuracy}")
     print(f'Precision: {precision:.4f}')
     print(f'Recall: {recall:.4f}')
     print(f'F1 Score: {f1_score:.4f}')
     print('Confusion Matrix:')
-    print(conf_matrix.numpy())
+    print(conf_matrix)

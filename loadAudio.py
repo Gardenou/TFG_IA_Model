@@ -93,7 +93,7 @@ class AudioUtil():
   # replaced with the mean value.
   # ----------------------------
   @staticmethod
-  def spectro_augment(spec, max_mask_pct=0.1, n_freq_masks=1, n_time_masks=1):
+  def spectro_augment(spec, max_mask_pct=0.1, n_freq_masks=2, n_time_masks=2):
     _, n_mels, n_steps = spec.shape
     mask_value = spec.mean()
     aug_spec = spec
