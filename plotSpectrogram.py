@@ -45,6 +45,9 @@ for channel in range(1):
     plot_spectrogram(sgram_orig, channel = channel, title="Espectrograma Original ")
 
 for channel in range(1):
+    plot_spectrogram(sgram, channel = channel, title="Espectrograma Preprocessat ")    
+
+for channel in range(1):
     plot_spectrogram(aug_sgram, channel = channel, title="Espectrograma Augmentat ")
 
         
