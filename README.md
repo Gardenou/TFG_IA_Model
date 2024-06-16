@@ -9,6 +9,9 @@ A les carpetes /logs tenim els logs  de resultats en .csv més significatius amb
 
 A la carpeta /weights guardem els arxius dels pesos resultants dels entrenaments més significatius en format .pth. Es poden carregar en el model des de la classe run.
 
+El conjunt ESC-50 es pot descarregar directament des de https://github.com/karolpiczak/ESC-50 .
+
+El conjunt UrbanSound8K es pot descarregar (previ registre) des de la web: https://urbansounddataset.weebly.com/download-urbansound8k.html .
 
 Jordi Garriga Muñoz (jgarrigamoon@uoc.edu)
 Grau d'Enginyeria Informàtica UOC
