@@ -12,7 +12,7 @@ import csv
 
 
 def training(model, train_dl, max_epochs):
-    # Loss Function, Optimizer and Scheduler
+    # Loss Function, Optimizer i Scheduler
     criterion = nn.CrossEntropyLoss()
     #optimizer = torch.optim.RMSprop(model.parameters(), lr=0.001)
     #optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
@@ -38,32 +38,31 @@ def training(model, train_dl, max_epochs):
             running_loss = 0.0
             correct_prediction = 0
             total_prediction = 0
-
-            # Repeat for each batch in the training set
+            
             for i, data in enumerate(train_dl):
-                # Get the input features and target labels, and put them on the GPU
+                # Inputs d'entrades, separem text i audio
                 inputs, labels = data[0].to(mo.device), data[1].to(mo.device)
 
-                # Normalize the inputs
+                # Normalitzar
                 inputs_m, inputs_s = inputs.mean(), inputs.std()
                 inputs = (inputs - inputs_m) / inputs_s
 
-                # Zero the parameter gradients
+                # posem el gradient de l'optimitzador a zero abans de començar el procés
                 optimizer.zero_grad()
 
-                # forward + backward + optimize
+                # forward + backward + optimització
                 outputs = model(inputs)
                 loss = criterion(outputs, labels)
                 loss.backward()
                 optimizer.step()
                 scheduler.step()
-
-                # Keep stats for Loss and Accuracy
+                
                 running_loss += loss.item()
 
-                # Get the predicted class with the highest score
+                # Agafem la classe amb millor puntuació
                 _, prediction = torch.max(outputs, 1)
-                # Count of predictions that matched the target label
+
+                # Mètode simple de recompte bàsic de prediccions correctes 
                 correct_prediction += (prediction == labels).sum().item()
                 total_prediction += prediction.shape[0]
 

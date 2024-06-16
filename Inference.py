@@ -13,23 +13,24 @@ def inference(model, val_dl):
     all_preds = []
     all_labels = []
 
-    # Disable gradient updates
+    # Traiem l'actualització dels gradients perquè no té una afectació important en 
+    # la inferència i ens permet executar els experiments molt més ràpidament
     with torch.no_grad():
         for data in td.val_dl:
-            # Get the input features and target labels, and put them on the GPU
+            # Separa audio i text i passa-ho al model
             inputs, labels = data[0].to(mo.device), data[1].to(mo.device)
 
-            # Normalize the inputs
+            # Normalització bàsica dels arrays
             inputs_m, inputs_s = inputs.mean(), inputs.std()
             inputs = (inputs - inputs_m) / inputs_s
 
-            # Get current predictions
+            # Prediccions
             outputs = model(inputs)
 
-            # Get the predicted class with the highest score
+            # Agafa la classe amb el valor més alt
             _, prediction = torch.max(outputs, 1)
 
-            # Count of predictions that matched the target label
+            # Mètode simple de recompte bàsic de prediccions correctes (substituit per CalculateMetrius)
             correct_prediction += (prediction == labels).sum().item()
             total_prediction += prediction.shape[0]
 
@@ -39,8 +40,10 @@ def inference(model, val_dl):
     acc = correct_prediction / total_prediction
     print(f'Accuracy: {acc:.2f}, Total items: {total_prediction}')
 
+    # Cridem a CalculateMetrics
     precision, recall, f1_score, accuracy, conf_matrix = cm.calculate_metrics(torch.tensor(all_preds), torch.tensor(all_labels), 10)
     
+    # Mostrem els resultats
     print(f"Accuracy: {accuracy}")
     print(f'Precision: {precision:.4f}')
     print(f'Recall: {recall:.4f}')

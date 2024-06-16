@@ -4,7 +4,7 @@
 #######################################################################
 
 import loadAudio as la
-from torch.utils.data import DataLoader, Dataset, random_split
+from torch.utils.data import DataLoader, Dataset
 
 
 class SoundDS(Dataset):
@@ -19,26 +19,22 @@ class SoundDS(Dataset):
         self.channel = 2
         self.shift_pct = 0.4
 
-    # Number of items in dataset
     def __len__(self):
         return len(self.df)
 
-    # Get i'th item in dataset
+    # Agafa un element del conjunt
     def __getitem__(self, idx):
-        # Absolute file path of the audio file - concatenate the audio directory with
-        # the relative path
+        # Ruta a la carpeta amb les dades
         audio_file = self.data_path + self.df.loc[idx, 'relative_path']
-        # Get the Class ID
+        # Classe definida pel label
         class_id = self.df.loc[idx, 'classID']
 
+        # Classe per ESC-50
         #class_id = self.df.loc[idx, 'target']
 
         aud = la.AudioUtil.open(audio_file)
-        # Some sounds have a higher sample rate, or fewer channels compared to the
-        # majority. So make all sounds have the same number of channels and same
-        # sample rate. Unless the sample rate is the same, the pad_trunc will still
-        # result in arrays of different lengths, even though the sound duration is
-        # the same.
+       
+        # Tots els processos d'audio
         reaud = la.AudioUtil.resample(aud, self.sr)
         rechan = la.AudioUtil.rechannel(reaud, self.channel)
 

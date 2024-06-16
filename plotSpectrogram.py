@@ -8,7 +8,7 @@ sr = 44100
 channel = 2
 shift_pct = 0.4
 
-
+# Carrega el fitxer i fes el rpeprcoessament
 audio_file = 'C:\\Users\\denou\\Downloads\\UrbanSound8K\\UrbanSound8K\\audio\\fold4\\74723-3-0-0.wav'
 
 aud = la.AudioUtil.open(audio_file)
@@ -28,6 +28,7 @@ sgram = la.AudioUtil.spectro_gram(shift_aud, n_mels=64, n_fft=1024, hop_len=None
 
 aug_sgram = la.AudioUtil.spectro_augment(sgram, max_mask_pct=0.1, n_freq_masks=2, n_time_masks=2)
 
+# Funció base
 def plot_spectrogram(spectrogram, channel=0, title="Spectrograma", ylabel="Freqüència (Hz)", aspect='auto', cmap='rainbow'):
     
     channel_spectrogram = spectrogram[channel].numpy()
@@ -40,7 +41,7 @@ def plot_spectrogram(spectrogram, channel=0, title="Spectrograma", ylabel="Freq�
     ax.set_xlabel("Temps (frames)")
     plt.show()
 
-# Plot the spectrogram
+# Printa l'espectrograma, només un canal
 for channel in range(1):
     plot_spectrogram(sgram_orig, channel = channel, title="Espectrograma Original ")
 

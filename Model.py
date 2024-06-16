@@ -11,14 +11,12 @@ import torch
 # Audio Classification Model
 # ----------------------------
 class AudioClassifier(nn.Module):
-    # ----------------------------
-    # Build the model architecture
-    # ----------------------------
+
     def __init__(self):
         super().__init__()
         conv_layers = []
 
-        # First Convolution Block with Relu and Batch Norm. Use Kaiming Initialization
+        # Primer bloc convolucional, 2 canals d'entrada
         self.conv1 = nn.Conv2d(2, 8, kernel_size=(5, 5), stride=(2, 2), padding=(2, 2))
         self.relu1 = nn.ReLU()
         self.bn1 = nn.BatchNorm2d(8)
@@ -26,7 +24,7 @@ class AudioClassifier(nn.Module):
         self.conv1.bias.data.zero_()
         conv_layers += [self.conv1, self.relu1, self.bn1]
 
-        # Second Convolution Block
+        # Segon bloc convolucional
         self.conv2 = nn.Conv2d(8, 16, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
         self.relu2 = nn.ReLU()
         self.bn2 = nn.BatchNorm2d(16)
@@ -34,7 +32,7 @@ class AudioClassifier(nn.Module):
         self.conv2.bias.data.zero_()
         conv_layers += [self.conv2, self.relu2, self.bn2]
 
-        # Second Convolution Block
+        # Tercer bloc convolucional
         self.conv3 = nn.Conv2d(16, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
         self.relu3 = nn.ReLU()
         self.bn3 = nn.BatchNorm2d(32)
@@ -42,7 +40,7 @@ class AudioClassifier(nn.Module):
         self.conv3.bias.data.zero_()
         conv_layers += [self.conv3, self.relu3, self.bn3]
 
-        # Second Convolution Block
+        # Últim bloc, 64 canals de sortida
         self.conv4 = nn.Conv2d(32, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
         self.relu4 = nn.ReLU()
         self.bn4 = nn.BatchNorm2d(64)
@@ -50,35 +48,33 @@ class AudioClassifier(nn.Module):
         self.conv4.bias.data.zero_()
         conv_layers += [self.conv4, self.relu4, self.bn4]
 
-        # Linear Classifier
+        # Classificador Lineal amb Average Pooling
         self.ap = nn.AdaptiveAvgPool2d(output_size=1)
         self.lin = nn.Linear(in_features=64, out_features=10)
-
-        # Wrap the Convolutional Blocks
+        
         self.conv = nn.Sequential(*conv_layers)
 
     # ----------------------------
-    # Forward pass computations
+    # Forward
     # ----------------------------
     def forward(self, x):
-        # Run the convolutional blocks
+        # Blocs convolucionals
         x = self.conv(x)
 
-        # Adaptive pool and flatten for input to linear layer
+        # Adaptive pool i procés de flattening abans del classificador
         x = self.ap(x)
         x = x.view(x.shape[0], -1)
 
-        # Linear layer
+        # Cridem el classificador
         x = self.lin(x)
 
-        # Final output
+        # Sortida
         return x
 
 
-# Create the model and put it on the GPU if available
+# Cridem la funció i la posem a la GPU si és possible (canvio el paràmetre per executar-ho en el portàtil)
 myModel = AudioClassifier()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 myModel = myModel.to(device)
 
-# Check that it is on Cuda
 next(myModel.parameters()).device

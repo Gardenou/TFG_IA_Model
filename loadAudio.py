@@ -9,50 +9,48 @@ import torch
 from torchaudio import transforms, load
 
 class AudioUtil():
-  # Load an audio file. Return the signal as a tensor and the sample rate
+  # Carrega un fitxer d'audio i n'extreu el tensor (sig) i el mostreig (sr)
   @staticmethod
   def open(audio_file):
     sig, sr = load(audio_file)
     return (sig, sr)
 
-  # Convert the given audio to the desired number of channels
+  # Convertir a dos canals
   @staticmethod
   def rechannel(aud, new_channel):
     sig, sr = aud
 
     if (sig.shape[0] == new_channel):
-      # Nothing to do
       return aud
 
     if (new_channel == 1):
-      # Convert from stereo to mono by selecting only the first channel
       resig = sig[:1, :]
     else:
-      # Convert from mono to stereo by duplicating the first channel
+      # Convertir de mono a stereo replicant el canal que tenim
       resig = torch.cat([sig, sig])
 
     return ((resig, sr))
 
-  # Since Resample applies to a single channel, we resample one channel at a time
+  # Resamplejar al valor donat
   @staticmethod
   def resample(aud, newsr):
     sig, sr = aud
 
-    if (sr == newsr):
-      # Nothing to do
+    if (sr == newsr):     
       return aud
 
     num_channels = sig.shape[0]
-    # Resample first channel
+    # Resampleja un canal
     resig = transforms.Resample(sr, newsr)(sig[:1, :])
     if (num_channels > 1):
-      # Resample the second channel and merge both channels
+      # Resample el segon canal
       retwo = transforms.Resample(sr, newsr)(sig[1:, :])
+      # Uneix de nou els dos canals
       resig = torch.cat([resig, retwo])
 
     return ((resig, newsr))
 
-  # Pad (or truncate) the signal to a fixed length 'max_ms' in milliseconds
+  # Trunquem la pista o afegim zero-padding
   @staticmethod
   def pad_trunc(aud, max_ms):
     sig, sr = aud
@@ -60,15 +58,14 @@ class AudioUtil():
     max_len = sr // 1000 * max_ms
 
     if (sig_len > max_len):
-      # Truncate the signal to the given length
       sig = sig[:, :max_len]
 
     elif (sig_len < max_len):
-      # Length of padding to add at the beginning and end of the signal
+  
       pad_begin_len = random.randint(0, max_len - sig_len)
       pad_end_len = max_len - sig_len - pad_begin_len
 
-      # Pad with 0s
+      # Padding
       pad_begin = torch.zeros((num_rows, pad_begin_len))
       pad_end = torch.zeros((num_rows, pad_end_len))
 
@@ -76,8 +73,7 @@ class AudioUtil():
 
     return (sig, sr)
 
-  # Shifts the signal to the left or right by some percent. Values at the end
-  # are 'wrapped around' to the start of the transformed signal.
+  # Mètode TimeShift (desplaçament temporal en l'eix x)
   @staticmethod
   def time_shift(aud, shift_limit):
     sig, sr = aud
@@ -87,10 +83,9 @@ class AudioUtil():
 
 
   # ----------------------------
-  # Augment the Spectrogram by masking out some sections of it in both the frequency
-  # dimension (ie. horizontal bars) and the time dimension (vertical bars) to prevent
-  # overfitting and to help the model generalise better. The masked sections are
-  # replaced with the mean value.
+  # Implementació de la tècnica SpecAugment explicada en la memòria
+  # Triem el numero d'emmascaraments i generem les línies horitzaontals
+  # i verticals.
   # ----------------------------
   @staticmethod
   def spectro_augment(spec, max_mask_pct=0.1, n_freq_masks=2, n_time_masks=2):
@@ -109,15 +104,15 @@ class AudioUtil():
     return aug_spec
 
 
-  # Generate a Spectrogram
+  # Genera l'espectrograma
   @staticmethod
   def spectro_gram(aud, n_mels=64, n_fft=1024, hop_len=None):
     sig, sr = aud
+    # Nivell màxim de decibels segons conjunt
     top_db = 80
-
-    # spec has shape [channel, n_mels, time], where channel is mono, stereo etc
+    # Funció espectrograma de Mel, passem els paràmetres de finestra, nombre de frequències i hop(no utilitzat aqui)
     spec = transforms.MelSpectrogram(sr, n_fft=n_fft, hop_length=hop_len, n_mels=n_mels)(sig)
 
-    # Convert to decibels
+    # Escala logarítmica per passa-ho a decibels
     spec = transforms.AmplitudeToDB(top_db=top_db)(spec)
     return (spec)
